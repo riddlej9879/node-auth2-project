@@ -1,13 +1,13 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const usersModel = require("./users-model");
-// const restrict = require("../middleware/restrict")
+const restricted = require("../middleware/restricted");
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
 // Get a list of users
-router.get("/users", async (req, res, next) => {
+router.get("/users", restricted, async (req, res, next) => {
   try {
     res.json(await usersModel.find());
   } catch (err) {
@@ -37,10 +37,11 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+// Login existing user
 router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = await Users.findBy({ username }).first();
+    const user = await usersModel.findBy({ username }).first();
 
     if (!user) {
       return res.status(401).json({
@@ -76,6 +77,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+// Logs user out
 router.get("/logout", async (req, res, next) => {
   try {
     req.session.destroy((err) => {

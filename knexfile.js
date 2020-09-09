@@ -12,6 +12,7 @@ module.exports = {
   seeds: {
     directory: "./database/seeds",
   },
+  // Not needed with one table but copied and pasted anyway
   pool: {
     afterCreate: (conn, done) => {
       conn.run("PRAGMA foreign_keys = ON", done);
